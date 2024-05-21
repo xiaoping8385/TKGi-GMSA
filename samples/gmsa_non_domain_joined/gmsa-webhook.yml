@@ -1,0 +1,185 @@
+## Template to deploy the GMSA webhook
+## TODO: make this a helmchart instead?
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gmsa-webhook
+  labels:
+    gmsa-webhook: disabled
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gmsa-webhook
+  namespace: gmsa-webhook
+data:
+  tls_private_key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBOEZaOFRBSkhtaW40SjVoTVErYmptZDVRK09RbElBYjRNWGdabG4xSWxINUJGWFY1Cm15cDZiNHpXWWR5aElHU09ad3dqZVRac1ozeWF1VEtDa0tGODZERG9KQ1BOenI1R0NaeGRtd1ExSTJEd21jMDcKaE5TMGY4SjdiMElPZ0J4c2srQVFHVktKQWJ3bm1mK3RwTVcxT25oTjNIQzFJa1NNKzVTQTJ0L1NPNy9ZenVtcApKTjNHT0sxUUZGb3FReGVPUmNzOVdROWt0Rko4NUtUZkJWRkpyUGJUL1Z2cFFZTHlxWk1RN3NNOUl6c1BmSmpXCm14a05Felo1dis0V1dJSkpRQWlLWk5nRlpDNHZZbi84WFo3dHJ3WEJVc2tOY0NyTnFxT3ppR3U1NEM3VEZWWDAKME5FandDZHJsM0xCZTM5Umw0U0Vwbm9IYXRqODJlVFBWbzVJcFFJREFRQUJBb0lCQUJSdUZhVFVjTWUvRjVRdQpFeFdXay9ScGZKS2J1amd0djMxZEN6ZktzSmZHMzd0MlAvOGJya3E3T3lJWWdpM2h2bVV1Ri9uZTBYbytrbHg1CjJiVjN0TWw4RnMrenAzUVNvcHVBaWtoNkpCWTgwRmNTcGlPVmZUNTdCc2tmWVdJc2lHSk5vckMwWG1jaVdtOXgKMTQzeExJV3E0bHVCelRQN2hjeUJCQzhXNWFVa2NKWXNIclhnNEM4S2U3TmJncHdOOVNVQnhjMVgyckU3anczZQpQYnBLNEc2bU1hL25ZLzhMYjhTdmhzSS82R2RSdDA2M3doNHJwWUZvZWRxNEdKMUVlOHl1NDdyWlJoZ1V6L1UwCmVZL2doZDl1SHJZV29CUVMzdWVxd1FiOFFVMXZVMTNFU2xkTFRuY1lacGk1Rk9MZDBnSzMwZ0VtNERlU1ZlMHIKYkF3WFlRRUNnWUVBLzMzV293MEVJdVdOUjlKZWpKSkUrMXo1d0ZaNkdnU21ueFNRcE9IMEMwemhDVTFiNXFmVQpCQ3J4ZDg0R2FGajZvZ0kvYlRkcys0UTA3WDZSQkUwOFY0MmpmeVZseURDR28rTGV4enl2RGJSc2h4RGF6T0N3Clhva0xCMzkzbWlDYis4NTJyMTJOSXpVY2lTaFdIRHNtYkp2WXZDQitUdjVTUkJsYUJkN3dtTUVDZ1lFQThORHQKVFdsQUo1UkJPTDZrUXlPS0RWUHYwMWxiV0NWdmVOWUtDMVdQOFE4NThOTElSbEJlblp6eU9WUGwxaWgraHJ0Uwpua2lkK2VRRXdLSEdEbG5rblRxY2lRZjdVVGg3MTYvRWpqYkNxMTJnUUhPVzcyd3djN09sOTF6WmRWOGpERmp5CmVYRDc5Y1dYZ3pjY1kwUXN2WEI5U3RoaGxHQjJIQ3RwTzF2NnBPVUNnWUVBcS9XNGx6blZoTjlYL2ZVN3FnVncKNUhZcHF5a0pPYVhUdDlLUm9FaHNoNGFSR0QrM0VVSDRVMjNMNUVVSXp3YkVlbkprMmsrcHpJZXBVQWdWOXYwOQpGZmpCQ0h6VlNxNU9rTlBMK2ZHQUtRczgySk9oa0svU1JXNmJ1OG94WjgxMjd6NkJaM3JoMmNhUGxFbFAyK1I3CjhqSGE2SlErTDFEQmNoQldKUWx1aW9FQ2dZQXJGMGVQTllrc1MrUUwwbGswUmxTNm84MWpSVGNLSTlDNWo1dEcKZ2UzNjFaMnBrUjRUTHVodlRaa3VWdXZta1dKcW0zUmlMRjVRUzlQcDRFaS9ZcWg4MWZNU3RpSHJXNjhWWGpkTwp0MC9JT0QybnFzZFVXa2lsTzMwME1TSWNWWVRBL2QyTmk0RWFibHY1TjlCVmx1cG1qNDFyNmlJejJicm91WC9nCkJrcG9YUUtCZ1FEd3lLeHhCUzlmVjc0YS9ON3VidHJGOWV5NFhZRjlXZHBSWmd5aTVjVnhTUTFHM25GWDdFUFUKdGhqNlFMc1BIRnk4SXRYR2VudmpwR083YlgyTmt5MXhrN2pRSWR0UTBCd3U0dDFYU3NVbjVkREJsekRTUEorSgprYWRPV1FIdzQzdE9IWWJYUGVQd2lISllNNDVXdU9UNWdobVFldUtnSUJ1Vk1PL2dFc2l1OEE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+  tls_certificate: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURqVENDQW5XZ0F3SUJBZ0lRZXF4U051WVJKU3ZFaFJlQ1RBcC9UVEFOQmdrcWhraUc5dzBCQVFzRkFEQU4KTVFzd0NRWURWUVFERXdKallUQWVGdzB5TkRBMU1EZ3dPVFUwTXpGYUZ3MHlPREEwTURjd05UUTRNelphTUVzeApGVEFUQmdOVkJBb1RESE41YzNSbGJUcHViMlJsY3pFeU1EQUdBMVVFQXhNcGMzbHpkR1Z0T201dlpHVTZaMjF6CllTMTNaV0pvYjI5ckxtZHRjMkV0ZDJWaWFHOXZheTV6ZG1Nd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUIKRHdBd2dnRUtBb0lCQVFEd1ZueE1Ba2VhS2Znbm1FeEQ1dU9aM2xENDVDVWdCdmd4ZUJtV2ZVaVVma0VWZFhtYgpLbnB2ak5aaDNLRWdaSTVuRENONU5teG5mSnE1TW9LUW9Yem9NT2drSTgzT3ZrWUpuRjJiQkRVallQQ1p6VHVFCjFMUi93bnR2UWc2QUhHeVQ0QkFaVW9rQnZDZVovNjJreGJVNmVFM2NjTFVpUkl6N2xJRGEzOUk3djlqTzZha2sKM2NZNHJWQVVXaXBERjQ1Rnl6MVpEMlMwVW56a3BOOEZVVW1zOXRQOVcrbEJndktwa3hEdXd6MGpPdzk4bU5hYgpHUTBUTm5tLzdoWllna2xBQ0lwazJBVmtMaTlpZi94ZG51MnZCY0ZTeVExd0tzMnFvN09JYTduZ0x0TVZWZlRRCjBTUEFKMnVYY3NGN2YxR1hoSVNtZWdkcTJQelo1TTlXamtpbEFnTUJBQUdqZ2Fvd2dhY3dEZ1lEVlIwUEFRSC8KQkFRREFnV2dNQk1HQTFVZEpRUU1NQW9HQ0NzR0FRVUZCd01CTUF3R0ExVWRFd0VCL3dRQ01BQXdId1lEVlIwagpCQmd3Rm9BVXFoZmxQZ0tucE8rVTdsN1pTVmQxR0hBdXVrd3dVUVlEVlIwUkJFb3dTSUlNWjIxellTMTNaV0pvCmIyOXJnaGxuYlhOaExYZGxZbWh2YjJzdVoyMXpZUzEzWldKb2IyOXJnaDFuYlhOaExYZGxZbWh2YjJzdVoyMXoKWVMxM1pXSm9iMjlyTG5OMll6QU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFGRE5aU0pzOVhac2ZsRWN5QlNnMgo3WFVGM3lGb090ZVZqQjIxZkFnVmdYK2VsdHV4eG5kVmhYLzl4REU4S2Ivai9rdnpzdzFsSFZoSy91UjJTTS9ECnREWTljOUJBdVBGNVFNVHZ5MituMnVORllJNzREa3h3Q3FhTHd6ZzRsYi9FRmVETTNmZnkweWx4bFoxbVhmcm8KVnpwUWp2QisreXIrTStjNCtZSm5uRjlTY2V3UXpWS1g2ZkFzNVlsZ2lkRFVnV2Y1M254REFFNjBCSmU4TDgvRgo5d0lBRXdsSHI4S0lxWDBFd2oreGp5ZHcyaHc5aXRmTGRyc3AxcFdCRkhsL3F0YzVsMURpdTgwWis0RmdOcmVGCml1cmcwcjV1dUl6YmRYOEhzQkZaeklRdlZKQlFqNm52ZnRMa1duQnhHMlBVWVQ5UTRIeDhWcVJmVEdzNkVxUHAKY1E9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+
+---
+
+# the service account for the webhook
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gmsa-webhook
+  namespace: gmsa-webhook
+
+---
+
+# the RBAC role that the webhook needs to:
+#  * read GMSA custom resources
+#  * check authorizations to use GMSA cred specs
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: gmsa-webhook-gmsa-webhook-rbac-role
+rules:
+- apiGroups: ["windows.k8s.io"]
+  resources: ["gmsacredentialspecs"]
+  verbs: ["get"]
+- apiGroups: ["authorization.k8s.io"]
+  resources: ["localsubjectaccessreviews"]
+  verbs: ["create"]
+
+---
+
+# bind that role to the webhook's service account
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: gmsa-webhook-gmsa-webhook-binding-to-gmsa-webhook-gmsa-webhook-rbac-role
+  namespace: gmsa-webhook
+subjects:
+- kind: ServiceAccount
+  name: gmsa-webhook
+  namespace: gmsa-webhook
+roleRef:
+  kind: ClusterRole
+  name: gmsa-webhook-gmsa-webhook-rbac-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gmsa-webhook
+  namespace: gmsa-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gmsa-webhook
+  template:
+    metadata:
+      labels:
+        app: gmsa-webhook
+    spec:
+      serviceAccountName: gmsa-webhook
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: gmsa-webhook
+        image: registry.k8s.io/gmsa-webhook/k8s-gmsa-webhook:v0.8.0
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /health
+            port: 443
+        ports:
+        - containerPort: 443
+        volumeMounts:
+          - name: tls
+            mountPath: "/tls"
+            readOnly: true
+        env:
+          - name: TLS_KEY
+            value: /tls/key
+          - name: TLS_CRT
+            value: /tls/crt
+      volumes:
+      - name: tls
+        secret:
+          secretName: gmsa-webhook
+          items:
+          - key: tls_private_key
+            path: key
+          - key: tls_certificate
+            path: crt
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: gmsa-webhook
+  namespace: gmsa-webhook
+spec:
+  ports:
+  - port: 443
+    targetPort: 443
+  selector:
+    app: gmsa-webhook
+
+---
+
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: gmsa-webhook
+webhooks:
+- name: admission-webhook.windows-gmsa.sigs.k8s.io
+  clientConfig:
+    service:
+      name: gmsa-webhook
+      namespace: gmsa-webhook
+      path: "/validate"
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMrekNDQWVPZ0F3SUJBZ0lVWGt5NWxZTjNnZ0NMMk9IU2dCZGNTeURZdmNjd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0RURUxNQWtHQTFVRUF4TUNZMkV3SGhjTk1qUXdOREEzTURVME9ETTJXaGNOTWpnd05EQTNNRFUwT0RNMgpXakFOTVFzd0NRWURWUVFERXdKallUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCCkFMNEJ3UWh1ZE9pQng0M2c2dk1YdnJZWXA1L0pHczhGdUdXYUhidGpsWXdzaGM2Qk00S1FhbFVlcDgzRWxOcjAKaVYxV0haUFhHRllaUDRxNDR2QkxGNTZOcWMwYm5sWEsrVUJzaW92elFKaWlKK0ZhL3YrRHZsTkdnZzF2Q3dmQwpEUi9SVFVvSjdIaTlSOThHM2R1U1J0c0FHVm1yMTZFNWdKRmo0THhFUnRuMng2SmNTcVFzODdVK1phakhRcEFXCnlwcVg1ejh6a0o4U1AxWFBLRlo2V29nRXFXblQ2RGlIU1FMak1BcnRDZUQyd1N5aUJRMGs2VnE2Q1ZZYzQ3ZFEKN2Z2cE44SENUL3U5b0kwYVJGU254RHFOWS9RSU9ha21oVkdFYnovY1BGSC9BZVNWc1ZwN1lnYmpxOWp5U09HYgo0Tyt0TjVCUzJFVEFqcSsxbFJPQlVZTUNBd0VBQWFOVE1GRXdIUVlEVlIwT0JCWUVGS29YNVQ0Q3A2VHZsTzVlCjJVbFhkUmh3THJwTU1COEdBMVVkSXdRWU1CYUFGS29YNVQ0Q3A2VHZsTzVlMlVsWGRSaHdMcnBNTUE4R0ExVWQKRXdFQi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFMS2I3bXZqRzlDZllpbHN1bm5iSHJSQQpMcU1BNEk0RFQxdE5vYVc4aEpscWVrZk5zWXBDVEhhRkU0WmsxWTgwUTdXU09vZ05MT1lRV01Fc2h2NUlyMkQzCkZtUFZnODZ0dG1ib2VLMzJFbUpCNEt2NDVOS2pPUDREZS9PbWNPcEpGY01paUFUUjdoSTFXQmNFa0N5TjNJdlcKWmlsK0JCR1RjanQvODJ3dWs4Wk94T253eHVwR0VvNkp4RlRucTZ2SXcxVkRudmZTbWFidDJVdGZhNXkzaWw5KwovSTRpOGtQWXptdnRUTm92RFZHejZUamRSKy9yaUxCQ3VjbDhySVN5SElTemltbVZlSmdQcHF0aU82NHg5b3dlCjNIb3Y5S0hjbkh4bWNsYVZhczhyU1VYb0ZkYVJQUXVQMk01MTlIN1ZXWXNiSVh5SFdDUllpOWFWalFjOVIzRT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQoK
+  rules:
+  - operations: ["CREATE", "UPDATE"]
+    apiGroups: [""]
+    apiVersions: ["*"]
+    resources: ["pods"]
+  failurePolicy: Fail
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  # don't run on gmsa-webhook
+  namespaceSelector:
+    matchExpressions:
+      - key: gmsa-webhook
+        operator: NotIn
+        values: [disabled]
+
+---
+
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: gmsa-webhook
+webhooks:
+- name: admission-webhook.windows-gmsa.sigs.k8s.io
+  clientConfig:
+    service:
+      name: gmsa-webhook
+      namespace: gmsa-webhook
+      path: "/mutate"
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMrekNDQWVPZ0F3SUJBZ0lVWGt5NWxZTjNnZ0NMMk9IU2dCZGNTeURZdmNjd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0RURUxNQWtHQTFVRUF4TUNZMkV3SGhjTk1qUXdOREEzTURVME9ETTJXaGNOTWpnd05EQTNNRFUwT0RNMgpXakFOTVFzd0NRWURWUVFERXdKallUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCCkFMNEJ3UWh1ZE9pQng0M2c2dk1YdnJZWXA1L0pHczhGdUdXYUhidGpsWXdzaGM2Qk00S1FhbFVlcDgzRWxOcjAKaVYxV0haUFhHRllaUDRxNDR2QkxGNTZOcWMwYm5sWEsrVUJzaW92elFKaWlKK0ZhL3YrRHZsTkdnZzF2Q3dmQwpEUi9SVFVvSjdIaTlSOThHM2R1U1J0c0FHVm1yMTZFNWdKRmo0THhFUnRuMng2SmNTcVFzODdVK1phakhRcEFXCnlwcVg1ejh6a0o4U1AxWFBLRlo2V29nRXFXblQ2RGlIU1FMak1BcnRDZUQyd1N5aUJRMGs2VnE2Q1ZZYzQ3ZFEKN2Z2cE44SENUL3U5b0kwYVJGU254RHFOWS9RSU9ha21oVkdFYnovY1BGSC9BZVNWc1ZwN1lnYmpxOWp5U09HYgo0Tyt0TjVCUzJFVEFqcSsxbFJPQlVZTUNBd0VBQWFOVE1GRXdIUVlEVlIwT0JCWUVGS29YNVQ0Q3A2VHZsTzVlCjJVbFhkUmh3THJwTU1COEdBMVVkSXdRWU1CYUFGS29YNVQ0Q3A2VHZsTzVlMlVsWGRSaHdMcnBNTUE4R0ExVWQKRXdFQi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFMS2I3bXZqRzlDZllpbHN1bm5iSHJSQQpMcU1BNEk0RFQxdE5vYVc4aEpscWVrZk5zWXBDVEhhRkU0WmsxWTgwUTdXU09vZ05MT1lRV01Fc2h2NUlyMkQzCkZtUFZnODZ0dG1ib2VLMzJFbUpCNEt2NDVOS2pPUDREZS9PbWNPcEpGY01paUFUUjdoSTFXQmNFa0N5TjNJdlcKWmlsK0JCR1RjanQvODJ3dWs4Wk94T253eHVwR0VvNkp4RlRucTZ2SXcxVkRudmZTbWFidDJVdGZhNXkzaWw5KwovSTRpOGtQWXptdnRUTm92RFZHejZUamRSKy9yaUxCQ3VjbDhySVN5SElTemltbVZlSmdQcHF0aU82NHg5b3dlCjNIb3Y5S0hjbkh4bWNsYVZhczhyU1VYb0ZkYVJQUXVQMk01MTlIN1ZXWXNiSVh5SFdDUllpOWFWalFjOVIzRT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQoK
+  rules:
+  - operations: ["CREATE"]
+    apiGroups: [""]
+    apiVersions: ["*"]
+    resources: ["pods"]
+  failurePolicy: Fail
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  # don't run on gmsa-webhook
+  namespaceSelector:
+    matchExpressions:
+    - key: gmsa-webhook
+      operator: NotIn
+      values: [disabled]

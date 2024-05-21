@@ -1,0 +1,29 @@
+# Create the Role to read the credspec
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: webapp01-role
+rules:
+- apiGroups: ["windows.k8s.io"]
+  resources: ["gmsacredentialspecs"]
+  verbs: ["use"]
+  resourceNames: ["gmsa-webapp01"]
+---
+# Create the Role to read the credspec
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: allow-default-svc-account-read-on-gmsa-WebApp01
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: webapp01-role
+  apiGroup: rbac.authorization.k8s.io
+
+
+
+

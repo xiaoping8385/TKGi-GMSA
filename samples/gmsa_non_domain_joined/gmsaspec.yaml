@@ -1,0 +1,24 @@
+apiVersion: windows.k8s.io/v1
+kind: GMSACredentialSpec
+metadata:
+  name: gmsa-webapp02  # This is an arbitrary name but it will be used as a reference
+credspec:
+  ActiveDirectoryConfig:
+    GroupManagedServiceAccounts:
+    - Name: WebApp02   # Username of the GMSA account
+      Scope: GMSAPING  # NETBIOS Domain Name
+    - Name: WebApp02   # Username of the GMSA account
+      Scope: gmsaping.com # DNS Domain Name
+    HostAccountConfig:
+      PluginGUID: "{f919de1a-efc4-4902-b7e5-56a314a87262}"
+      PluginInput: DOMAINNAME=gmsaping.com;USERNAME=StandardUser01;PASSWORD=p@ssw0rd;logFile=c:\\temp\\logfile.log
+      PortableCcgVersion: "1"
+  CmsPlugins:
+  - ActiveDirectory
+  DomainJoinConfig:
+    DnsName: gmsaping.com  # DNS Domain Name
+    DnsTreeName: gmsaping.com # DNS Domain Name Root
+    Guid: bae5a583-612f-4e8a-9b69-9df1c5c9b81a  # GUID
+    MachineAccountName: WebApp02 # Username of the GMSA account
+    NetBiosName: GMSAPING  # NETBIOS Domain Name
+    Sid: S-1-5-21-922537405-2102905723-2121843970 # SID of GMSA

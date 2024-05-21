@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: with-creds
+  name: with-creds
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: with-creds
+  template:
+    metadata:
+      labels:
+        run: with-creds
+    spec:
+      securityContext:
+        windowsOptions:
+          gmsaCredentialSpecName: gmsa-webapp02
+      containers:
+      - image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019
+        imagePullPolicy: Always
+        name: webapp02
+      hostname: webapp02  
+      nodeSelector:
+        kubernetes.io/os: windows
+      tolerations:
+      - key: "windows"
+        operator: "Equal"
+        value: "2019"
+        effect: "NoSchedule"
