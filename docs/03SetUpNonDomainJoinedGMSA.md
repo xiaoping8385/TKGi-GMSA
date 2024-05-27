@@ -18,10 +18,10 @@ New-ADUser -Name "StandardUser01" -AccountPassword (ConvertTo-SecureString -AsPl
 
 # Add your container hosts to the security group
 Add-ADGroupMember -Identity "WebApp02Accounts" -Members "StandardUser01"
-
 ```
+
 3. Edit your gmsaspec.yaml, addint the HostAccountConfig to your spec
-   ```
+```
   apiVersion: windows.k8s.io/v1
 kind: GMSACredentialSpec
 metadata:
@@ -46,7 +46,47 @@ credspec:
     MachineAccountName: WebApp02 # Username of the GMSA account
     NetBiosName: GMSAPING  # NETBIOS Domain Name
     Sid: S-1-5-21-922537405-2102905723-2121843970 # SID of GMSA
-   ```
-4.Install the rest of the resource in the sample/gmsa_non_domain_joined, including gmsa-crd.yml. gmsarbac.yaml, gmsaspec.yml,gmsa-webhook.yaml,deployment.yaml
+```
+4.Install the rest of the resource in the sample/gmsa_non_domain_joined, including gmsa-crd.yml. gmsarbac.yaml, gmsaspec.yml,gmsa-webhook.yaml,deployment.yaml and validate your application.
+```
+PS C:\> Nltest /query
+Flags: 0
+Connection Status = 0 0x0 NERR_Success
+The command completed successfully
+PS C:\> Nltest /sc_verify:gmsaping.com
+Flags: b0 HAS_IP  HAS_TIMESERV
+Trusted DC Name \\WIN-5DF7THCD7UL.gmsaping.com
+Trusted DC Connection Status Status = 0 0x0 NERR_Success
+Trust Verification Status = 0 0x0 NERR_Success
+The command completed successfully
+PS C:\> klist get krbtgt
 
+Current LogonId is 0:0x2f864f1
+A ticket to krbtgt has been retrieved successfully.
 
+Cached Tickets: (2)
+
+#0>     Client: WebApp02$ @ GMSAPING.COM
+        Server: krbtgt/GMSAPING.COM @ GMSAPING.COM
+        KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+        Ticket Flags 0x40a10000 -> forwardable renewable pre_authent name_canonicalize
+        Start Time: 5/21/2024 7:20:13 (local)
+        End Time:   5/21/2024 17:20:13 (local)
+        Renew Time: 5/28/2024 7:20:13 (local)
+        Session Key Type: AES-256-CTS-HMAC-SHA1-96
+        Cache Flags: 0
+        Kdc Called: WIN-5DF7THCD7UL.gmsaping.com
+
+#1>     Client: WebApp02$ @ GMSAPING.COM
+        Server: krbtgt/GMSAPING.COM @ GMSAPING.COM
+        KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+        Ticket Flags 0x40e10000 -> forwardable renewable initial pre_authent name_canonicalize
+        Start Time: 5/21/2024 7:20:13 (local)
+        End Time:   5/21/2024 17:20:13 (local)
+        Renew Time: 5/28/2024 7:20:13 (local)
+        Session Key Type: AES-256-CTS-HMAC-SHA1-96
+        Cache Flags: 0x1 -> PRIMARY
+        Kdc Called: WIN-5DF7THCD7UL.gmsaping.com
+PS C:\>
+
+```
