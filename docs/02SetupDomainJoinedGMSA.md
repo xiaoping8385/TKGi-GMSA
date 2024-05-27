@@ -113,6 +113,103 @@ objectGUID        : d5d7d853-2699-4caf-a7aa-58a6ecdf4d79
 SamAccountName    : WIN-8E8KH04F8SV$
 SID               : S-1-5-21-922537405-2102905723-2121843970-1108
 ```
+7.Deploy your gmsa application.(refer to the samples folder)
+```
+kubo@jumper:~/gmsa$ ./deploy-gmsa-webhook.sh  --file ~/gmsa/gmsa-webhook.yml 
+WARNING: Certs dir gmsa-webhook-certs already exists
+WARNING: gmsa-webhook-certs/server-key.pem already exists, not re-generating
+WARNING: gmsa-webhook-certs/csr.conf already exists, not re-generating
+WARNING: gmsa-webhook-certs/server.csr already exists, not re-generating
+certificatesigningrequest.certificates.k8s.io "gmsa-webhook.gmsa-webhook" deleted
+certificatesigningrequest.certificates.k8s.io/gmsa-webhook.gmsa-webhook created
+NAME                        AGE   SIGNERNAME                      REQUESTOR    REQUESTEDDURATION   CONDITION
+gmsa-webhook.gmsa-webhook   0s    kubernetes.io/kubelet-serving   oidc:alana   <none>              Pending
+certificatesigningrequest.certificates.k8s.io/gmsa-webhook.gmsa-webhook approved
+WARNING: gmsa-webhook-certs/server-cert.pem already exists, not re-generating
+customresourcedefinition.apiextensions.k8s.io "gmsacredentialspecs.windows.k8s.io" deleted
+customresourcedefinition.apiextensions.k8s.io/gmsacredentialspecs.windows.k8s.io created
+*** using config file authentication ***
+using local envsubst
+namespace/gmsa-webhook created
+secret/gmsa-webhook created
+serviceaccount/gmsa-webhook created
+clusterrole.rbac.authorization.k8s.io/gmsa-webhook-gmsa-webhook-rbac-role created
+clusterrolebinding.rbac.authorization.k8s.io/gmsa-webhook-gmsa-webhook-binding-to-gmsa-webhook-gmsa-webhook-rbac-role created
+deployment.apps/gmsa-webhook created
+service/gmsa-webhook created
+validatingwebhookconfiguration.admissionregistration.k8s.io/gmsa-webhook created
+mutatingwebhookconfiguration.admissionregistration.k8s.io/gmsa-webhook created
+
+*** Windows GMSA Admission Webhook successfully deployed! ***
+*** You can remove it by running /usr/local/bin/kubectl delete -f /home/kubo/gmsa/gmsa-webhook.yml ***
+kubo@jumper:~/gmsa$ kubectl apply -f gmsacrd.yaml
+kubo@jumper:~/gmsa$ kubectl apply -f gmsaspec.yaml
+kubo@jumper:~/gmsa$ kubectl apply -f gmsarbac.yaml
+kubo@jumper:~/gmsa$ kubectl apply -f deployment.yaml
+
+```
+8.Verify your gmsa application works as expected
+```
+kubectl -exec -it pod -- PowerShell
+
+PS C:\> ping gmsaping.com
+
+Pinging gmsaping.com [10.199.17.13] with 32 bytes of data:
+Reply from 10.199.17.13: bytes=32 time=2ms TTL=117
+Reply from 10.199.17.13: bytes=32 time=2ms TTL=117
+Reply from 10.199.17.13: bytes=32 time=2ms TTL=117
+
+Ping statistics for 10.199.17.13:
+    Packets: Sent = 3, Received = 3, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 2ms, Average = 2ms
+
+
+Trusted DC Name \\WIN-5DF7THCD7UL.gmsaping.com
+Trusted DC Connection Status Status = 0 0x0 NERR_Success
+Trust Verification Status = 0 0x0 NERR_Success
+The command completed successfully
+
+
+PS C:\> klist get krbtgt
+
+Current LogonId is 0:0x108b2bdb
+A ticket to krbtgt has been retrieved successfully.
+
+Cached Tickets: (2)
+
+#0>     Client: WebApp01$ @ GMSAPING.COM
+        Server: krbtgt/GMSAPING.COM @ GMSAPING.COM
+        KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+        Ticket Flags 0x40a10000 -> forwardable renewable pre_authent name_canonicalize
+        Start Time: 5/21/2024 2:46:58 (local)
+        End Time:   5/21/2024 12:46:58 (local)
+        Renew Time: 5/28/2024 2:46:58 (local)
+        Session Key Type: AES-256-CTS-HMAC-SHA1-96
+        Cache Flags: 0
+        Kdc Called: WIN-5DF7THCD7UL.gmsaping.com
+
+#1>     Client: WebApp01$ @ GMSAPING.COM
+        Server: krbtgt/GMSAPING.COM @ GMSAPING.COM
+        KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+        Ticket Flags 0x40e10000 -> forwardable renewable initial pre_authent name_canonicalize
+        Start Time: 5/21/2024 2:46:58 (local)
+        End Time:   5/21/2024 12:46:58 (local)
+        Renew Time: 5/28/2024 2:46:58 (local)
+        Session Key Type: AES-256-CTS-HMAC-SHA1-96
+        Cache Flags: 0x1 -> PRIMARY
+        Kdc Called: WIN-5DF7THCD7UL.gmsaping.com
+
+
+PS C:\> Nltest /query
+Flags: 0
+Connection Status = 0 0x0 NERR_Success
+The command completed successfully
+
+```
+
+
+
 
 
 
