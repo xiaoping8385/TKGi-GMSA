@@ -164,7 +164,8 @@ Ping statistics for 10.199.17.13:
 Approximate round trip times in milli-seconds:
     Minimum = 2ms, Maximum = 2ms, Average = 2ms
 
-
+PS C:\>Nltest /sc_verify:gmsaping.com
+Flags: b0 HAS_IP  HAS_TIMESERV
 Trusted DC Name \\WIN-5DF7THCD7UL.gmsaping.com
 Trusted DC Connection Status Status = 0 0x0 NERR_Success
 Trust Verification Status = 0 0x0 NERR_Success
