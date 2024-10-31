@@ -1,0 +1,724 @@
+
+
+ Set-Service bosh-agent -StartupType Automatic
+ Set-Service bosh-dns-windows -StartupType Automatic
+ Set-Service bosh-dns-healthcheck-windows -StartupType Automatic
+ Set-Service bosh-dns-nameserverconfig-windows -StartupType Automatic
+ Set-Service kubelet -StartupType Automatic
+ Set-Service nsx-kube-proxy -StartupType Automatic
+ Set-Service nsx-node-agent -StartupType Automatic
+ Set-Service containerd -StartupType Automatic      
+ Set-Service ovs-vswitchd -StartupType Automatic
+ Set-Service ovsdb-server -StartupType Automatic
+ Set-Service system-metrics-agent -StartupType Automatic
+ Get-Service bosh-agent | Select-Object -Property Name, StartType, Status
+
+
+=============================== Add computer to domain
+
+PS C:\Users\bosh_58c8de1962b24e3> netdom query DC /domain "gmsaping.com" /userd "administrator" /passwordd "Admin!23"
+List of domain controllers with accounts in the domain:
+
+WIN-5DF7THCD7UL
+The command completed successfully.
+
+PS C:\Users\bosh_58c8de1962b24e3> $domainUserPasswordObject = ConvertTo-SecureString -String "Admin!23" -AsPlainText -Force
+
+PS C:\Users\bosh_58c8de1962b24e3> $domainUserCredObject = New-Object System.Management.Automation.PSCredential ("administrator@gmsaping.com", $domainUserPasswordObject)
+
+PS C:\Users\bosh_58c8de1962b24e3> echo $domainUserPasswordObject
+System.Security.SecureString
+
+PS C:\Users\bosh_58c8de1962b24e3> Add-Computer -DomainName "gmsaping.com" -Credential $domainUserCredObject -Force
+WARNING: The changes will take effect after you restart the computer 92b9d147-fe8c-40e1-ba3f-c40d336505cd.
+
+
+PS C:\Users\bosh_58c8de1962b24e3> Get-WmiObject -Class Win32_ComputerSystem
+
+
+Domain              : gmsaping.com
+Manufacturer        : VMware, Inc.
+Model               : VMware Virtual Platform
+Name                : WIN-8E8KH04F8SV
+PrimaryOwnerName    :
+TotalPhysicalMemory : 4294430720
+
+TO do 。。。。
+PS C:\Users\bosh_58c8de1962b24e3> Set-Service bosh-agent -StartupType Automatic
+
+===================================
+
+
+PS C:\Users\bosh_58c8de1962b24e3> $ADDomain = Get-ADDomain -Server "gmsaping.com" -Credential $domainUserCredObject
+PS C:\Users\bosh_58c8de1962b24e3> echo $ADDomain
+
+
+AllowedDNSSuffixes                 : {}
+ChildDomains                       : {}
+ComputersContainer                 : CN=Computers,DC=gmsaping,DC=com
+DeletedObjectsContainer            : CN=Deleted Objects,DC=gmsaping,DC=com
+DistinguishedName                  : DC=gmsaping,DC=com
+DNSRoot                            : gmsaping.com
+DomainControllersContainer         : OU=Domain Controllers,DC=gmsaping,DC=com
+DomainMode                         : Windows2012R2Domain
+DomainSID                          : S-1-5-21-922537405-2102905723-2121843970
+ForeignSecurityPrincipalsContainer : CN=ForeignSecurityPrincipals,DC=gmsaping,DC=com
+Forest                             : gmsaping.com
+InfrastructureMaster               : WIN-5DF7THCD7UL.gmsaping.com
+LastLogonReplicationInterval       :
+LinkedGroupPolicyObjects           : {CN={31B2F340-016D-11D2-945F-00C04FB984F9},CN=Policies,CN=System,DC=gmsaping,DC=com}
+LostAndFoundContainer              : CN=LostAndFound,DC=gmsaping,DC=com
+ManagedBy                          :
+Name                               : gmsaping
+NetBIOSName                        : GMSAPING
+ObjectClass                        : domainDNS
+ObjectGUID                         : bae5a583-612f-4e8a-9b69-9df1c5c9b81a
+ParentDomain                       :
+PDCEmulator                        : WIN-5DF7THCD7UL.gmsaping.com
+PublicKeyRequiredPasswordRolling   :
+QuotasContainer                    : CN=NTDS Quotas,DC=gmsaping,DC=com
+ReadOnlyReplicaDirectoryServers    : {}
+ReplicaDirectoryServers            : {WIN-5DF7THCD7UL.gmsaping.com}
+RIDMaster                          : WIN-5DF7THCD7UL.gmsaping.com
+SubordinateReferences              : {DC=DomainDnsZones,DC=gmsaping,DC=com, DC=ForestDnsZones,DC=gmsaping,DC=com,
+                                     CN=Configuration,DC=gmsaping,DC=com}
+SystemsContainer                   : CN=System,DC=gmsaping,DC=com
+UsersContainer                     : CN=Users,DC=gmsaping,DC=com
+
+PS C:\Users\bosh_22ac1d852f9b4e3> $ADDomain = Get-ADDomain -Server "gmsaping.com" -Credential $domainUserCredObject
+ 
+
+AllowedDNSSuffixes                 : {}
+ChildDomains                       : {}
+ComputersContainer                 : CN=Computers,DC=gmsaping,DC=com
+DeletedObjectsContainer            : CN=Deleted Objects,DC=gmsaping,DC=com
+DomainControllersContainer         : OU=Domain Controllers,DC=gmsaping,DC=com
+DomainMode                         : Windows2012R2Domain
+DomainSID                          : S-1-5-21-922537405-2102905723-2121843970
+ForeignSecurityPrincipalsContainer : CN=ForeignSecurityPrincipals,DC=gmsaping,DC=com
+Forest                             : gmsaping.com
+InfrastructureMaster               : WIN-5DF7THCD7UL.gmsaping.com
+LastLogonReplicationInterval       :
+LinkedGroupPolicyObjects           : {CN={31B2F340-016D-11D2-945F-00C04FB984F9},CN=Policies,CN=System,DC=gmsaping,DC=com}
+LostAndFoundContainer              : CN=LostAndFound,DC=gmsaping,DC=com
+ManagedBy                          :
+Name                               : gmsaping
+NetBIOSName                        : GMSAPING
+ObjectClass                        : domainDNS
+ObjectGUID                         : bae5a583-612f-4e8a-9b69-9df1c5c9b81a
+ParentDomain                       :
+PDCEmulator                        : WIN-5DF7THCD7UL.gmsaping.com
+PublicKeyRequiredPasswordRolling   :
+QuotasContainer                    : CN=NTDS Quotas,DC=gmsaping,DC=com
+ReadOnlyReplicaDirectoryServers    : {}
+ReplicaDirectoryServers            : {WIN-5DF7THCD7UL.gmsaping.com}
+RIDMaster                          : WIN-5DF7THCD7UL.gmsaping.com
+SubordinateReferences              : {DC=DomainDnsZones,DC=gmsaping,DC=com, DC=ForestDnsZones,DC=gmsaping,DC=com,
+                                     CN=Configuration,DC=gmsaping,DC=com}
+SystemsContainer                   : CN=System,DC=gmsaping,DC=com
+UsersContainer                     : CN=Users,DC=gmsaping,DC=com
+
+
+
+
+
+PS C:\Users\bosh_58c8de1962b24e3> Install-WindowsFeature RSAT-AD-PowerShell -Source 'c:\windows\WinSxS'
+
+Success Restart Needed Exit Code      Feature Result
+------- -------------- ---------      --------------
+True    No             NoChangeNeeded {}
+
+
+PS C:\Users\bosh_58c8de1962b24e3> Import-Module ActiveDirectory
+
+PS C:\Users\bosh_58c8de1962b24e3> Get-ADComputer "WIN-8E8KH04F8SV" -Credential $domainUserCredObject
+
+
+DistinguishedName : CN=WIN-8E8KH04F8SV,CN=Computers,DC=gmsaping,DC=com
+DNSHostName       : 92b9d147-fe8c-40e1-ba3f-c40d336505cd.gmsaping.com
+Enabled           : True
+Name              : WIN-8E8KH04F8SV
+ObjectClass       : computer
+ObjectGUID        : d5d7d853-2699-4caf-a7aa-58a6ecdf4d79
+SamAccountName    : WIN-8E8KH04F8SV$
+SID               : S-1-5-21-922537405-2102905723-2121843970-1108
+UserPrincipalName :
+
+PS C:\Users\bosh_22ac1d852f9b4e3> Get-ADComputer "WIN-FRR4KTGVJ57" -Credential $domainUserCredObject
+
+
+DistinguishedName : CN=WIN-FRR4KTGVJ57,CN=Computers,DC=gmsaping,DC=com
+DNSHostName       : 83caddb1-48e6-4504-8b58-a20ea12df4b2.gmsaping.com
+Enabled           : True
+Name              : WIN-FRR4KTGVJ57
+ObjectClass       : computer
+ObjectGUID        : 3e0921e3-cabc-4b82-a652-77b8df1cfd33
+SamAccountName    : WIN-FRR4KTGVJ57$
+SID               : S-1-5-21-922537405-2102905723-2121843970-1113
+UserPrincipalName :
+
+
+
+Get-ADGroup  -Filter 'SamAccountName -eq ' -Credential $domainUserCredObject
+
+
+PS C:\Users\bosh_f769047b76494fd> echo $dockerCredentialData
+
+Name                           Value
+----                           -----
+CmsPlugins                     {ActiveDirectory}
+DomainJoinConfig               {Sid, DnsName, MachineAccountName, DnsTreeName...}
+ActiveDirectoryConfig          {GroupManagedServiceAccounts}
+PS C:\Users\bosh_f769047b76494fd> $dockerCredentialSpecPath="$dockerCredentialSpecDir\$domainServiceAccountName.json"
+PS C:\Users\bosh_f769047b76494fd> $dockerCredentialData | ConvertTo-Json -Depth 5 | Out-File -FilePath $dockerCredentialSpecPath -Encoding ascii
+
+
+
+==========execute in domain controller===============
+
+
+Add-KdsRootKey -EffectiveTime ((get-date).addhours(-10))
+
+
+
+# Replace 'WebApp01' and 'contoso.com' with your own gMSA and domain names, respectively.
+
+# To install the AD module on Windows Server, run Install-WindowsFeature RSAT-AD-PowerShell
+# To install the AD module on Windows 10 version 1809 or later, run Add-WindowsCapability -Online -Name 'Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0'
+# To install the AD module on older versions of Windows 10, see https://aka.ms/rsat
+
+# Create the security group
+New-ADGroup -Name "WebApp01 Authorized Hosts" -SamAccountName "WebApp01Hosts" -GroupScope DomainLocal
+
+# Create the gMSA
+New-ADServiceAccount -Name "WebApp01" -DnsHostName "WebApp01.gmsaping.com" -ServicePrincipalNames "host/WebApp01", "host/WebApp01.gmsaping.com" -PrincipalsAllowedToRetrieveManagedPassword "WebApp01Hosts"
+
+# Add your container hosts to the security group
+//Add-ADGroupMember -Identity "WebApp01Hosts" -Members "ContainerHost01$", "ContainerHost02$", "ContainerHost03$"
+
+
+
+
+========execute in windows client===================
+domainGroup=WebApp01Hosts
+
+
+PS C:\Users\bosh_7ff2b21529fb42d> Get-ADGroup  -Filter "SamAccountName -like 'WebApp01Hosts' " -Credential $domainUserCredObject
+
+
+DistinguishedName : CN=WebApp01 Authorized Hosts,CN=Users,DC=gmsaping,DC=com
+GroupCategory     : Security
+GroupScope        : DomainLocal
+Name              : WebApp01 Authorized Hosts
+ObjectClass       : group
+ObjectGUID        : 8b731502-5801-410f-82f8-e747f19893f6
+SamAccountName    : WebApp01Hosts
+SID               : S-1-5-21-922537405-2102905723-2121843970-1111
+
+
+
+$computer=Get-ADComputer "WIN-8E8KH04F8SV" -Credential $domainUserCredObject
+$computer=Get-ADComputer "WIN-OKA6EC62K0G" -Credential $domainUserCredObject
+
+
+
+PS C:\Users\bosh_7ff2b21529fb42d> Add-ADGroupMember -Identity "WebApp01Hosts" -Members $computer -Credential $domainUserCredObject
+PS C:\Users\bosh_7ff2b21529fb42d> Get-ADGroupMember -Identity WebApp01Hosts -Credential $domainUserCredObject
+
+
+distinguishedName : CN=WIN-8E8KH04F8SV,CN=Computers,DC=gmsaping,DC=com
+name              : WIN-8E8KH04F8SV
+objectClass       : computer
+objectGUID        : d5d7d853-2699-4caf-a7aa-58a6ecdf4d79
+SamAccountName    : WIN-8E8KH04F8SV$
+SID               : S-1-5-21-922537405-2102905723-2121843970-1108
+=========================
+PS C:\Users\bosh_22ac1d852f9b4e3>Get-ADGroupMember -Identity WebApp01Hosts -Credential $domainUserCredObject
+
+
+distinguishedName : CN=WIN-FRR4KTGVJ57,CN=Computers,DC=gmsaping,DC=com
+name              : WIN-FRR4KTGVJ57
+objectClass       : computer
+objectGUID        : 3e0921e3-cabc-4b82-a652-77b8df1cfd33
+SamAccountName    : WIN-FRR4KTGVJ57$
+SID               : S-1-5-21-922537405-2102905723-2121843970-1113
+
+distinguishedName : CN=WIN-8E8KH04F8SV,CN=Computers,DC=gmsaping,DC=com 
+name              : WIN-8E8KH04F8SV
+objectClass       : computer
+objectGUID        : d5d7d853-2699-4caf-a7aa-58a6ecdf4d79
+SamAccountName    : WIN-8E8KH04F8SV$
+SID               : S-1-5-21-922537405-2102905723-2121843970-1108
+==============================================================
+
+
+====================================================================
+NOTE: IMPORTANT!!!
+ ======> you need the latest kubectl， if not, you will met "kubectl describe csr kubernetes.io/kubelet-serving 
+error: there is no need to specify a resource type as a separate argument when passing arguments in resource/name form (e.g. 'kubectl get resource/<resource_name>' instead of 'kubectl get resource resource/<resource_name>'"
+
+kubo@jumper:~/gmsa$ ./deploy-gmsa-webhook.sh  --file ~/gmsa/gmsa-webhook.yml 
+WARNING: Certs dir gmsa-webhook-certs already exists
+WARNING: gmsa-webhook-certs/server-key.pem already exists, not re-generating
+WARNING: gmsa-webhook-certs/csr.conf already exists, not re-generating
+WARNING: gmsa-webhook-certs/server.csr already exists, not re-generating
+certificatesigningrequest.certificates.k8s.io "gmsa-webhook.gmsa-webhook" deleted
+certificatesigningrequest.certificates.k8s.io/gmsa-webhook.gmsa-webhook created
+NAME                        AGE   SIGNERNAME                      REQUESTOR    REQUESTEDDURATION   CONDITION
+gmsa-webhook.gmsa-webhook   0s    kubernetes.io/kubelet-serving   oidc:alana   <none>              Pending
+certificatesigningrequest.certificates.k8s.io/gmsa-webhook.gmsa-webhook approved
+WARNING: gmsa-webhook-certs/server-cert.pem already exists, not re-generating
+customresourcedefinition.apiextensions.k8s.io "gmsacredentialspecs.windows.k8s.io" deleted
+customresourcedefinition.apiextensions.k8s.io/gmsacredentialspecs.windows.k8s.io created
+*** using config file authentication ***
+using local envsubst
+namespace/gmsa-webhook created
+secret/gmsa-webhook created
+serviceaccount/gmsa-webhook created
+clusterrole.rbac.authorization.k8s.io/gmsa-webhook-gmsa-webhook-rbac-role created
+clusterrolebinding.rbac.authorization.k8s.io/gmsa-webhook-gmsa-webhook-binding-to-gmsa-webhook-gmsa-webhook-rbac-role created
+deployment.apps/gmsa-webhook created
+service/gmsa-webhook created
+validatingwebhookconfiguration.admissionregistration.k8s.io/gmsa-webhook created
+mutatingwebhookconfiguration.admissionregistration.k8s.io/gmsa-webhook created
+
+*** Windows GMSA Admission Webhook successfully deployed! ***
+*** You can remove it by running /usr/local/bin/kubectl delete -f /home/kubo/gmsa/gmsa-webhook.yml ***
+
+
+
+
+==================================================
+
+PS C:\ProgramData\docker\credentialspecs> cat .\WebApp01.json
+{ 
+    "CmsPlugins":  [
+                       "ActiveDirectory"
+                   ],
+    "DomainJoinConfig":  {
+                             "Sid":  "S-1-5-21-922537405-2102905723-2121843970",
+                             "DnsName":  "gmsaping.com",
+                             "MachineAccountName":  "WebApp01",
+                             "DnsTreeName":  "gmsaping.com",
+                             "Guid":  "bae5a583-612f-4e8a-9b69-9df1c5c9b81a",
+                             "NetBiosName":  "GMSAPING"
+                         },
+    "ActiveDirectoryConfig":  {
+                                  "GroupManagedServiceAccounts":  [
+                                                                      {
+                                                                          "Name":  "WebApp01",
+                                                                          "Scope":  "gmsaping.com"
+                                                                      },
+                                                                      {
+                                                                          "Name":  "WebApp01",
+                                                                          "Scope":  "GMSAPING"
+                                                                      }
+                                                                  ]
+                              }
+}
+
+=======================
+apiVersion: windows.k8s.io/v1
+kind: GMSACredentialSpec
+metadata:
+  name: gmsa-webapp01  # This is an arbitrary name but it will be used as a reference
+credspec:
+  ActiveDirectoryConfig:
+    GroupManagedServiceAccounts:
+    - Name: WebApp01   # Username of the GMSA account
+      Scope: GMSAPING  # NETBIOS Domain Name
+    - Name: WebApp01   # Username of the GMSA account
+      Scope: gmsaping.com # DNS Domain Name
+  CmsPlugins:
+  - ActiveDirectory
+  DomainJoinConfig:
+    DnsName: gmsaping.com  # DNS Domain Name
+    DnsTreeName: gmsaping.com # DNS Domain Name Root
+    Guid: bae5a583-612f-4e8a-9b69-9df1c5c9b81a  # GUID
+    MachineAccountName: WebApp01 # Username of the GMSA account
+    NetBiosName: GMSAPING  # NETBIOS Domain Name
+    Sid: S-1-5-21-922537405-2102905723-2121843970 # SID of GMSA
+
+
+# Create the Role to read the credspec
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: webapp1-role
+rules:
+- apiGroups: ["windows.k8s.io"]
+  resources: ["gmsacredentialspecs"]
+  verbs: ["use"]
+  resourceNames: ["gmsa-WebApp01"]
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: allow-default-svc-account-read-on-gmsa-WebApp01
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: webapp1-role
+  apiGroup: rbac.authorization.k8s.io
+
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: with-creds
+  name: with-creds
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: with-creds
+  template:
+    metadata:
+      labels:
+        run: with-creds
+    spec:
+      securityContext:
+        windowsOptions:
+          gmsaCredentialSpecName: gmsa-webapp1
+      containers:
+      - image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019
+        imagePullPolicy: Always
+        name: iis
+      nodeSelector:
+        kubernetes.io/os: windows
+
+=====================================
+
+How to check if gmsa works
+kubectl -exec -it pod -- PowerShell
+
+PS C:\> ping gmsaping.com
+
+Pinging gmsaping.com [10.199.17.13] with 32 bytes of data:
+Reply from 10.199.17.13: bytes=32 time=2ms TTL=117
+Reply from 10.199.17.13: bytes=32 time=2ms TTL=117
+Reply from 10.199.17.13: bytes=32 time=2ms TTL=117
+
+Ping statistics for 10.199.17.13:
+    Packets: Sent = 3, Received = 3, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 2ms, Average = 2ms
+Control-C
+PS C:\>
+PS C:\>
+PS C:\> whoami
+user manager\containeradministrator
+PS C:\> nltest.exe /query
+Flags: 0
+Connection Status = 1786 0x6fa ERROR_NO_TRUST_LSA_SECRET
+The command completed successfully
+PS C:\> nltest /sc_reset:gmsaping.com
+I_NetLogonControl failed: Status = 1786 0x6fa ERROR_NO_TRUST_LSA_SECRET
+PS C:\>
+
+
+======================
+
+$domainGroup="WebApp01Hosts"
+Remove-ADGroupMember -Identity $domainGroup -Members $computer -Credential $domainUserCredObject -Confirm:$False
+
+   # remove domain
+Remove-ADComputer -Identity $computer -Credential $domainUserCredObject -Confirm:$False
+
+
+
+$domainGroup = "WebApp01Hosts"
+
+
+Remove-Computer -UnjoinDomainCredential gmsaping.com\Admistrator -WorkgroupName WORKGROUP -Force -Restart
+
+
+
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319> .\RegSvcs.exe
+
+
+
+how to install dotnet 
+
+Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile "$env:TEMP\dotnet-install.ps1"
+& "$env:TEMP\dotnet-install.ps1" -Version "6.0.100" -InstallDir "$env:ProgramFiles\dotnet" -NoPath
+dotnet --version
+
+
+
+
+
+=======================
+unzip a file
+Expand-Archive -Path Debug.zip -DestinationPath .
+
+
+scp a file from windows, you need to find the REAL name from PowerShell
+
+
+cp ..\src\TKGI.CCG.Plugin\bin\Debug\* .
+
+
+
+
+Nltest /sc_verify:gmsaping.com
+Flags: b0 HAS_IP  HAS_TIMESERV
+Trusted DC Name \\WIN-5DF7THCD7UL.gmsaping.com
+Trusted DC Connection Status Status = 0 0x0 NERR_Success
+Trust Verification Status = 0 0x0 NERR_Success
+The command completed successfully
+PS C:\> klist get krbtgt
+
+Current LogonId is 0:0x108b2bdb
+A ticket to krbtgt has been retrieved successfully.
+
+Cached Tickets: (2)
+
+#0>     Client: WebApp01$ @ GMSAPING.COM
+        Server: krbtgt/GMSAPING.COM @ GMSAPING.COM
+        KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+        Ticket Flags 0x40a10000 -> forwardable renewable pre_authent name_canonicalize
+        Start Time: 5/21/2024 2:46:58 (local)
+        End Time:   5/21/2024 12:46:58 (local)
+        Renew Time: 5/28/2024 2:46:58 (local)
+        Session Key Type: AES-256-CTS-HMAC-SHA1-96
+        Cache Flags: 0
+        Kdc Called: WIN-5DF7THCD7UL.gmsaping.com
+
+#1>     Client: WebApp01$ @ GMSAPING.COM
+        Server: krbtgt/GMSAPING.COM @ GMSAPING.COM
+        KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+        Ticket Flags 0x40e10000 -> forwardable renewable initial pre_authent name_canonicalize
+        Start Time: 5/21/2024 2:46:58 (local)
+        End Time:   5/21/2024 12:46:58 (local)
+        Renew Time: 5/28/2024 2:46:58 (local)
+        Session Key Type: AES-256-CTS-HMAC-SHA1-96
+        Cache Flags: 0x1 -> PRIMARY
+        Kdc Called: WIN-5DF7THCD7UL.gmsaping.com
+
+
+PS C:\> Nltest /query
+Flags: 0
+Connection Status = 0 0x0 NERR_Success
+The command completed successfully
+
+
+
+
+=================================================
+
+None-domain-joined 
+
+
+# Create the security group
+New-ADGroup -Name "WebApp02 Authorized Accounts" -SamAccountName "WebApp02Accounts" -GroupScope DomainLocal
+
+# Create the gMSA
+New-ADServiceAccount -Name "WebApp02" -DnsHostName "WebApp02.gmsaping.com" -ServicePrincipalNames "host/WebApp02", "host/WebApp02.contoso.com" -PrincipalsAllowedToRetrieveManagedPassword "WebApp02Accounts"
+
+# Create the standard user account. This account information needs to be stored in a secret store and will be retrieved by the ccg.exe hosted plug-in to retrieve the gMSA password. Replace 'StandardUser01' and 'p@ssw0rd' with a unique username and password. We recommend using a random, long, machine-generated password.
+New-ADUser -Name "StandardUser01" -AccountPassword (ConvertTo-SecureString -AsPlainText "p@ssw0rd" -Force) -Enabled 1
+
+New-ADUser -Name "StandardUser01" -AccountPassword (ConvertTo-SecureString -AsPlainText "p@ssw0rd01" -Force) -Enabled 1
+New-ADUser -Name "StandardUser02" -AccountPassword (ConvertTo-SecureString -AsPlainText "p@ssw0rd" -Force) -Enabled 1
+
+scp  Administrator@10.199.17.13:C:\Users\Administrator/tkgiccg-new.zip .
+PS C:\Users\bosh_37ec3203706a411> Expand-Archive -Path tkgiccg-new.zip  -DestinationPath .
+PS C:\Users\bosh_37ec3203706a411> ls
+    Directory: C:\Users\bosh_37ec3203706a411
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        5/20/2024   9:13 AM                .ssh
+d-r---        9/15/2018   7:12 AM                Desktop
+d-r---        5/20/2024   7:44 AM                Documents
+d-r---        9/15/2018   7:12 AM                Downloads
+d-r---        9/15/2018   7:12 AM                Favorites
+d-r---        9/15/2018   7:12 AM                Links
+d-r---        9/15/2018   7:12 AM                Music
+d-r---        9/15/2018   7:12 AM                Pictures
+d-----        9/15/2018   7:12 AM                Saved Games
+d-----        5/20/2024   9:13 AM                tkgiccg-new
+ 
+
+PS C:\Users\bosh_37ec3203706a411> cd .\tkgiccg-new\
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new> ls
+
+
+    Directory: C:\Users\bosh_37ec3203706a411\tkgiccg-new
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        5/20/2024   9:13 AM                .git
+-a----        5/17/2024  11:20 AM             14 .gitignore
+-a----        5/17/2024  11:20 AM           1067 LICENSE
+-a----        5/17/2024  11:20 AM           2740 readme.md
+-a----        5/20/2024  11:17 AM           2334 TKGi.CCG.Plugin.sln
+
+
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new> cd .\src\
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new\src> ls
+
+
+    Directory: C:\Users\bosh_37ec3203706a411\tkgiccg-new\src
+
+
+Mode                LastWriteTime         Length Name
+d-----        5/20/2024   9:13 AM                TKGI.CCG.Plugin
+d-----        5/20/2024   9:13 AM                TKGi.CCG.Plugin.Test
+
+
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new\src> cd .\TKGI.CCG.Plugin\
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new\src\TKGI.CCG.Plugin> ls
+
+
+    Directory: C:\Users\bosh_37ec3203706a411\tkgiccg-new\src\TKGI.CCG.Plugin
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        5/20/2024   9:13 AM                bin
+d-----        5/20/2024   9:13 AM                obj
+d-----        5/20/2024   9:13 AM                Properties
+-a----        5/20/2024   2:11 AM           3570 CcgCredentialsProviderProvider.cs
+-a----        5/20/2024  11:17 AM            713 ICcgDomainAuthCredentials.cs
+-a----        5/20/2024  11:17 AM           2651 TKGi.CCG.Plugin.csproj
+
+
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new\src\TKGI.CCG.Plugin> cd .\bin\Debug\
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new\src\TKGI.CCG.Plugin\bin\Debug> ls
+
+
+    Directory: C:\Users\bosh_37ec3203706a411\tkgiccg-new\src\TKGI.CCG.Plugin\bin\Debug
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----        5/20/2024   2:11 AM           8704 TKGi.CCG.Plugin.dll
+ 
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new\src\TKGI.CCG.Plugin\bin\Debug> cp .\TKGi.CCG.Plugin.* C:\Users\bosh_37ec3203706a411\tkgiccg-new\resources\
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new\src\TKGI.CCG.Plugin\bin\Debug> cd C:\Users\bosh_37ec3203706a411\tkgiccg-new\resources\
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new\resources> ls
+
+
+    Directory: C:\Users\bosh_37ec3203706a411\tkgiccg-new\resources
+
+
+Mode                LastWriteTime         Length Name
+-a----        5/20/2024  11:17 AM            596 TKGi.CCG.Plugin.snk
+
+
+PS C:\Users\bosh_37ec3203706a411\tkgiccg-new\resources> .\install-plugin.ps1
+
+
+    Directory: C:\Program Files
+
+
+Mode                LastWriteTime         Length Name
+d-----        5/20/2024   7:47 AM                TKGICCGPlugin
+Microsoft (R) .NET Framework Services Installation Utility Version 4.7.3190.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Installed Assembly:
+        Assembly: C:\Program Files\TKGICCGPlugin\TKGi.CCG.Plugin.dll
+        Partition: {41E90F3E-56C1-4633-81C3-6E8BAC8BDD70}
+        TypeLib: C:\Program Files\TKGICCGPlugin\TKGi.CCG.Plugin.tlb
+1
+Enabled SeTakeOwnershipPrivilege privilege
+
+
+
+
+How to Debug, check ccg log
+
+
+
+1. get-winevent -logname Microsoft-Windows-Containers-CCG/Admin 
+
+2. optional:
+PS C:\temp>
+          > $logName = "Microsoft-Windows-Containers-CCG/Admin"
+PS C:\temp> $logName = "Microsoft-Windows-Containers-CCG/Admin"
+PS C:\temp> $outputPath = "C:\temp\Containers-CCG-Admin.evtx"
+PS C:\temp>
+            wevtutil epl $logName $outputPath
+PS C:\temp> ls
+    Directory: C:\temp
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----        5/21/2024   6:27 AM        1118208 Containers-CCG-Admin.evtx
+-a----        5/21/2024   6:27 AM           5048 logfile.log
+
+
+PS C:\temp> cat Containers-CCG-Admin.evtx
+
+ElfFile                        T      €       
+                                                                                 è
+ElfChnk        s              s       €   Øû  ˆý  Qé2A                                                                   Aµrb                ó  è                =      
+Î                                          ÷      ²          ›  f              ?  ø                    m          ©      M  F  º
+&                                                                          3
+          **  à         ]9)Ú 
+                             áÂà&      áÂàé‰‘Y2:oø'¢M–   A Š  M      º
+                                                                       E v e n t   ‡   j      ¼ x m l n s   5 h t t p : / / s c h e m a s . m i c 
+r o s o f t . c o m / w i n / 2 0 0 4 / 0 8 / e v e n t s / e v e n t ÿÿÚ  ø      oT S y s t e m   AÿÿY         ñ P r o v i d e r   6   F=      K• N a m e    X  
+) G u i d    A M   z      õa E v e n t I D   '   ›  X  )Ú
+
+
+To export the Microsoft-Windows-Containers-CCG log file from the Event Viewer using PowerShell, you can use the Export-Evtx cmdlet. Here’s a step-by-step guide on how to do this:
+
+Steps to Export the Log Using PowerShell
+Open PowerShell as Administrator
+
+Export the Log File
+
+Use the following command to export the log file. Replace C:\path\to\save\Containers-CCG-Admin.evtx with the actual path where you want to save the log file.
+
+powershell
+Copy code
+$logName = "Microsoft-Windows-Containers-CCG/Admin"
+$outputPath = "C:\path\to\save\Containers-CCG-Admin.evtx"
+
+wevtutil epl $logName $outputPath
+Explanation
+wevtutil epl is the command to export the event log.
+$logName specifies the name of the log you want to export.
+$outputPath specifies the path where the exported log file will be saved.
+Example
+Here's a complete example assuming you want to save the log file to C:\Logs\Containers-CCG-Admin.evtx:
+
+powershell
+Copy code
+$logName = "Microsoft-Windows-Containers-CCG/Admin"
+$outputPath = "C:\Logs\Containers-CCG-Admin.evtx"
+
+wevtutil epl $logName $outputPath
+This command will export the Containers-CCG log to the specified path.
+
+Reading the Exported Log File
+To read the exported log file on another machine, open Event Viewer, and then follow these steps:
+
+Open Event Viewer
+Click on Action -> Open Saved Log
+Navigate to the exported .evtx file and open it.
+Ensure the target machine has the necessary features enabled to read the log as previously mentioned.
+
+I can see from the event viewer that, the ccg reports, A process has request  access to an object but has not been granted those access rights
+ChatGPT
+The event indicating that "a process has requested access to an object but has not been granted those access rights" typically points to a permissions or access control issue. Here are the steps you can take to troubleshoot and resolve this issue:
+
+1. Identify the Source of the Access Issue
+Event Viewer Details: Check the details of the event in the Event Viewer to identify the process that is requesting access and the object to which access is being denied.
+Open Event Viewer (eventvwr.msc).
+Navigate to Applications and Services Logs -> Microsoft -> Windows -> Containers-CCG -> Admin.
+Find the specific event and look at the details to get more information.
